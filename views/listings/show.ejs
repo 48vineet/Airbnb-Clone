@@ -2,9 +2,10 @@
 
     <div class="row mt-3">
         <div class="col-8 offset-3">
-            <h3>
+            <h2>
                 <%= listing.title %>
-            </h3>
+            </h2>
+
         </div>
         <div class="card col-6 offset-3 show-card listing-card">
             <img src="<%= listing.image %>" class="card-img-top show-img" alt="listing_image">
@@ -52,13 +53,15 @@
                 <% for( review of listing.reviews) { %>
                     <div class="card col-5 ms-3 mb-3">
                         <div class="card-body">
-                            <h5 class="card-title"><b>Jhon Doe</b></h5>
+                            <h5 class="card-title mt-3"><b>Jhon Doe</b></h5>
                             <p class="card-text">
                                 <%= review.comment %>
                             </p>
                             <p class="card-text">
                                 <%= review.rating%> Stars
                             </p>
+                            <br>
+
                         </div>
                         <form action="/listings/<%=listing._id%>/reviews/<%= review._id %>?_method=DELETE" class="mb-3"
                             method="POST">
