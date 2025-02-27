@@ -12,8 +12,9 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+const listingRouter = require("./routes/listing.js");
+const reviewRouuter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 
 
 const MONGO_URL = "mongodb+srv://48vineet:Vineet%40123@airbnb.5tsow.mongodb.net/?retryWrites=true&w=majority&appName=AirBnB";
@@ -79,12 +80,13 @@ app.get("/demouser", async (req, res) => {
 
 //Listing Router
 
-app.use("/listings", listings);
+app.use("/listings", listingRouter);
 
 //Reviews router
 
-app.use("/listings/:id/reviews", reviews);
+app.use("/listings/:id/reviews", reviewRouuter);
 
+app.use("/", userRouter);
 
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
