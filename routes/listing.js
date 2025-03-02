@@ -1,22 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const warpAsync = require("../utils/warpAsync.js");
-const ExpressError = require("../utils/ExpressError.js");
-const { listingSchema } = require("../schema.js");
 const Listing = require("../models/listing.js");
-const { isLoggedIn } = require("../middleware.js");
+const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
 
-const validateListing = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body);
-
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    } else {
-        next();
-    }
-};
 
 //Index route
 router.get("/", warpAsync(async (req, res) => {
@@ -33,7 +21,12 @@ router.get("/new", isLoggedIn, (req, res) => {
 //show route
 router.get("/:id", warpAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews").populate("owner");
+    const listing = await Listing.findById(id).populate({
+        path: "reviews", populate: {
+            path: "author",
+        }
+    }).populate("owner");
+    console.log("Listing Reviews:", listing.reviews);
     if (!listing) {
         req.flash("error", "Listing you requested for does not exist");
         // res.redirect("/listings");
@@ -48,6 +41,7 @@ router.post("/", validateListing, isLoggedIn,
 
         const newListing = new Listing(req.body.listing);
         newListing.owner = req.user._id;
+        console.log("New Review Before Save:", review);
         await newListing.save();
         req.flash("success", "New Listing Created!");
         res.redirect("/listings");
@@ -56,7 +50,7 @@ router.post("/", validateListing, isLoggedIn,
 
 //Edit Route
 
-router.get("/:id/edit", isLoggedIn, warpAsync(async (req, res) => {
+router.get("/:id/edit", isLoggedIn, isOwner, warpAsync(async (req, res) => {
     let { id } = req.params;
     const listing = await Listing.findById(id);
     if (!listing) {
@@ -67,9 +61,15 @@ router.get("/:id/edit", isLoggedIn, warpAsync(async (req, res) => {
 }));
 
 //Update Route
-router.put("/:id/", validateListing, isLoggedIn, warpAsync(async (req, res) => {
-
+router.put("/:id/", validateListing, isLoggedIn, isOwner, warpAsync(async (req, res) => {
     let { id } = req.params;
+    let listing = await Listing.findById(id);
+    if (!listing.owner._id.equals(res.locals.currUser._id)) {
+        req.flash("error", "You dont have permission to edit");
+        return res.redirect(`/listings/${id}`);
+    }
+
+
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
     req.flash("success", "Listing Updated Succesfully!");
     res.redirect(`/listings/${id}`);
@@ -77,7 +77,7 @@ router.put("/:id/", validateListing, isLoggedIn, warpAsync(async (req, res) => {
 
 //Delete Route
 
-router.delete("/:id", isLoggedIn, warpAsync(async (req, res) => {
+router.delete("/:id", isLoggedIn, isOwner, warpAsync(async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
