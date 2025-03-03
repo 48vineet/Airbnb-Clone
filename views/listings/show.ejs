@@ -65,9 +65,9 @@
                                 <% for( review of listing.reviews) { %>
                                     <div class="card col-5 ms-3 mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title mt-3"><b>
-                                                    <%= review.author.username %>
-                                                </b></h5>
+                                            <h5 class="card-title mt-3">
+                                                @<%= review.author.username %>
+                                            </h5>
                                             <p class="card-text">
                                                 <%= review.comment %>
                                             </p>
