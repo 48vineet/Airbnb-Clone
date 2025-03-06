@@ -59,7 +59,6 @@ module.exports.renderUpdateRoute = async (req, res) => {
     res.redirect(`/listings/${id}`);
 };
 
-
 module.exports.renderDeleteRoute = async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
