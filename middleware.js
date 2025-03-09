@@ -12,7 +12,7 @@ module.exports.isLoggedIn = (req, res, next) => {
     }
     next();
 };
-
+ 
 module.exports.saveRedirectUrl = (req, res, next) => {
     res.locals.redirectUrl = req.session.redirectUrl || "/listings"; // Ensure it always has a value
     next();
