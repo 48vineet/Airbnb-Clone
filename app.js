@@ -78,7 +78,7 @@ app.use((req, res, next) => {
 //     let registeredUser = await User.register(fakeUser, "helloworld");
 //     res.send(registeredUser);
 // });
-
+ 
 //Listing Router
 
 app.use("/listings", listingRouter);
