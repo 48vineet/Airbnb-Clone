@@ -2,8 +2,6 @@ if (process.env.NODE_ENV != "production") {
     require('dotenv').config();
 }
 
-
-
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -13,19 +11,15 @@ const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
-
 const listingRouter = require("./routes/listing.js");
 const reviewRouuter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const { error } = require('console');
 
-
-// const MONGO_URL = "mongodb+srv://48vineet:Vineet%40123@airbnb.5tsow.mongodb.net/?retryWrites=true&w=majority&appName=AirBnB";
 const dbUrl = process.env.ATLASDB_URL;
 
 main().then(() => {
@@ -69,12 +63,6 @@ const sessionOptions = {
     }
 };
 
-// app.get("/", (req, res) => {
-//     res.send("Hi, I'm Root");
-// });
-
-
-
 app.use(session(sessionOptions));
 app.use(flash());
 
@@ -93,18 +81,11 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.get("/demouser", async (req, res) => {
-//     let fakeUser = new User({
-//         email: "vineet@gmail.com",
-//         username: "48_Vineet"
-//     });
-//     let registeredUser = await User.register(fakeUser, "helloworld");
-//     res.send(registeredUser);
-// });
-
-//Listing Router
-
 app.use("/listings", listingRouter);
+
+app.get("/", (req, res) => {
+    res.redirect("/listings"); // Redirect root to /listings
+});
 
 //Reviews router
 
@@ -119,7 +100,6 @@ app.all("*", (req, res, next) => {
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something Went Wrong!" } = err;
     res.status(statusCode).render("error.ejs", { message });
-    // res.status(statusCode).send(message);
 });
 
 app.listen(8080, () => {
