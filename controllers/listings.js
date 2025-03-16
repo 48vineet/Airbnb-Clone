@@ -37,6 +37,8 @@ module.exports.renderPostRoute = async (req, res, next) => {
         limit: 1,
     }).send();
 
+    console.log();
+
     let url = req.file.path;
     let filename = req.file.filename;
     const newListing = new Listing(req.body.listing);
