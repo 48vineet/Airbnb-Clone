@@ -6,9 +6,10 @@ const map = new mapboxgl.Map({
     zoom: 9 // Starting zoom
 });
 
-console.log("Coordinates from EJS:", coordinates);
+console.log(coordinates);
+console.log(coordinates);
 
 
 const marker1 = new mapboxgl.Marker()
-    .setLngLat(coordinates) //Listing.geometry.coordinates
+    .setLngLat([74.4611, 20.5351]) //Listing.geometry.coordinates
     .addTo(map);
