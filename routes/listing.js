@@ -6,26 +6,23 @@ const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
 const listingController = require("../controllers/listings.js");
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage });
 
 router.route("/")
     .get(warpAsync(listingController.index))
-    // .post(validateListing, isLoggedIn,
-    //     warpAsync(listingController.renderPostRoute)
-    // );
-    .post(upload.single('avatar'), (req, res) => {
-        res.send(req.body);
-    });
+    .post(isLoggedIn, upload.single('listing[image]'), validateListing,
+        warpAsync(listingController.renderPostRoute)
+    );
+
 
 //New route 
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
 router.route("/:id")
     .get(warpAsync(listingController.renderShowRoute))
-    .put(validateListing, isLoggedIn, isOwner, warpAsync(listingController.renderUpdateRoute))
+    .put(isLoggedIn, isOwner, upload.single('listing[image]'), validateListing, warpAsync(listingController.renderUpdateRoute))
     .delete(isLoggedIn, isOwner, warpAsync(listingController.renderDeleteRoute));
-
-
 
 //Edit Route
 router.get("/:id/edit", isLoggedIn, isOwner, warpAsync(listingController.renderEditRoute));
