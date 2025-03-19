@@ -15,7 +15,6 @@ router.route("/")
         warpAsync(listingController.renderPostRoute)
     );
 
-
 //New route 
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
@@ -26,7 +25,5 @@ router.route("/:id")
 
 //Edit Route
 router.get("/:id/edit", isLoggedIn, isOwner, warpAsync(listingController.renderEditRoute));
-
-
 
 module.exports = router;
