@@ -1,4 +1,4 @@
-# MajorProject  [Live-link](https://airbnb-clone-2ylv.onrender.com/listings)
+# MajorProject  [Live-link](https://airbnb-clone-2ylv.onrender.com/listings )
 
 
 This is the repository for `MajorProject`, a web application project that utilizes various modern web technologies and services.
